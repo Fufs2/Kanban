@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const password = document.getElementById('password').value;
 
         // Carrega os dados do arquivo users.json
-        fetch('Data/users.json')
+        fetch('Data/users.json') // Certifique-se de que este caminho esteja correto
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Erro ao carregar usuários: ' + response.statusText);
@@ -50,6 +50,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Função para adicionar nova tarefa à coluna "A Fazer"
     window.addTask = function (column) {
+        if (!currentUser) {
+            alert("Você precisa estar logado para adicionar tarefas.");
+            return;
+        }
         const task = prompt("Digite a descrição da tarefa:");
         if (task) {
             tasks[currentUser][column].push(task);
@@ -73,6 +77,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Renderiza as tarefas em suas respectivas colunas
     function renderTasks() {
+        if (!currentUser || !tasks[currentUser]) {
+            console.error('Usuário não autenticado ou tarefas não disponíveis.');
+            return;
+        }
+
         // Limpa as colunas
         document.getElementById('todo-items').innerHTML = '';
         document.getElementById('inprogress-items').innerHTML = '';
@@ -106,6 +115,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Move tarefa para a próxima coluna
     window.moveTask = function (currentColumn, index) {
+        if (!currentUser) {
+            alert("Você precisa estar logado para mover tarefas.");
+            return;
+        }
+
         let nextColumn;
 
         // Define para qual coluna a tarefa deve ser movida
