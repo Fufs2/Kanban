@@ -8,7 +8,7 @@
 </head>
 <body>
     <div id="login-form">
-        <h1>Login</h1>
+        <h1>Login Admin</h1>
         <input type="text" id="username" placeholder="Usuário" required>
         <input type="password" id="password" placeholder="Senha" required>
         <button onclick="login()">Entrar</button>
@@ -31,12 +31,24 @@
                 <div class="kanban-items" id="done-items"></div>
             </div>
         </div>
-        
-        <div id="admin-controls" style="display: none;">
-            <h2>Atribuir Tarefas</h2>
-            <input type="text" id="assign-username" placeholder="Usuário (ex: user1)">
-            <input type="text" id="assign-task" placeholder="Tarefa a ser atribuída">
-            <button onclick="assignTask()">Atribuir Tarefa</button>
+    </div>
+
+    <div>
+        <h3>Usuário</h3>
+        <p>Você pode movimentar as tarefas abaixo:</p>
+        <div id="user-kanban-board">
+            <div class="kanban-column" id="todo-user">
+                <h2>A Fazer</h2>
+                <div class="kanban-items" id="todo-items-user"></div>
+            </div>
+            <div class="kanban-column" id="in-progress-user">
+                <h2>Em Progresso</h2>
+                <div class="kanban-items" id="inprogress-items-user"></div>
+            </div>
+            <div class="kanban-column" id="done-user">
+                <h2>Concluído</h2>
+                <div class="kanban-items" id="done-items-user"></div>
+            </div>
         </div>
     </div>
 
