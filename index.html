@@ -7,22 +7,36 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Kanban Board</h1>
-    <div class="kanban-board">
-        <div class="kanban-column" id="todo">
-            <h2>A Fazer</h2>
-            <div class="kanban-items" id="todo-items">
-                <!-- Tarefas a serem adicionadas aqui -->
+    <div id="login-form">
+        <h1>Login</h1>
+        <input type="text" id="username" placeholder="Usuário" required>
+        <input type="password" id="password" placeholder="Senha" required>
+        <button onclick="login()">Entrar</button>
+    </div>
+    
+    <div id="kanban-board" style="display: none;">
+        <h1>Kanban Board</h1>
+        <div class="kanban-board">
+            <div class="kanban-column" id="todo">
+                <h2>A Fazer</h2>
+                <div class="kanban-items" id="todo-items"></div>
+                <div>
+                    <select id="assignee">
+                        <option value="">Selecione o Usuário</option>
+                        <option value="user1">User 1</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                    <button onclick="addTask('todo')">Adicionar Tarefa</button>
+                </div>
             </div>
-            <button onclick="addTask('todo')">Adicionar Tarefa</button>
-        </div>
-        <div class="kanban-column" id="in-progress">
-            <h2>Em Progresso</h2>
-            <div class="kanban-items" id="inprogress-items"></div>
-        </div>
-        <div class="kanban-column" id="done">
-            <h2>Concluído</h2>
-            <div class="kanban-items" id="done-items"></div>
+            <div class="kanban-column" id="in-progress">
+                <h2>Em Progresso</h2>
+                <div class="kanban-items" id="inprogress-items"></div>
+            </div>
+            <div class="kanban-column" id="done">
+                <h2>Concluído</h2>
+                <div class="kanban-items" id="done-items"></div>
+            </div>
         </div>
     </div>
     

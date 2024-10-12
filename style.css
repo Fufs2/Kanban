@@ -8,6 +8,11 @@ h1 {
     margin-top: 20px;
 }
 
+#login-form {
+    text-align: center;
+    margin-top: 50px;
+}
+
 .kanban-board {
     display: flex;
     justify-content: space-around;
