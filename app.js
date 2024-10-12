@@ -36,6 +36,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     if (user.username === 'admin') {
                         document.getElementById('admin-controls').style.display = 'block'; // Mostra controles do admin
+                    } else {
+                        document.getElementById('admin-controls').style.display = 'none'; // Esconde controles do admin para usuários comuns
                     }
 
                     renderTasks(); // Renderiza as tarefas
@@ -46,7 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .catch(err => console.error('Erro ao carregar usuários:', err));
     };
 
-    // Adiciona nova tarefa à coluna "A Fazer"
+    // Função para adicionar nova tarefa à coluna "A Fazer"
     window.addTask = function (column) {
         const task = prompt("Digite a descrição da tarefa:");
         if (task) {
@@ -55,20 +57,18 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     };
 
-    // Atribui tarefa para um usuário específico
+    // Função para atribuir tarefa a um usuário
     window.assignTask = function () {
-        const username = prompt("Para qual usuário você quer atribuir a tarefa?");
-        const task = prompt("Digite a descrição da tarefa a ser atribuída:");
+        const username = document.getElementById('assign-username').value;
+        const taskDescription = document.getElementById('assign-task').value;
 
-        if (username && task) {
-            if (tasks[username]) {
-                tasks[username].todo.push(task);
-                alert(`Tarefa "${task}" atribuída a ${username}.`);
-            } else {
-                alert('Usuário não encontrado.');
-            }
+        if (tasks[username]) {
+            tasks[username].todo.push(taskDescription);
+            alert(`Tarefa atribuída a ${username}: "${taskDescription}"`);
+            renderTasks();
+        } else {
+            alert('Usuário não encontrado');
         }
-        renderTasks();
     };
 
     // Renderiza as tarefas em suas respectivas colunas
@@ -80,7 +80,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Renderiza as tarefas do usuário atual
         const userTasks = tasks[currentUser];
-
         userTasks.todo.forEach((task, index) => {
             const taskDiv = createTaskDiv(task, 'todo', index);
             document.getElementById('todo-items').appendChild(taskDiv);
