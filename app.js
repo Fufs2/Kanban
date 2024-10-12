@@ -1,141 +1,99 @@
-document.addEventListener("DOMContentLoaded", function () {
-    // Tarefas dos usuários
-    let tasks = {
-        admin: {
-            todo: [],
-            inprogress: [],
-            done: []
-        },
-        user1: {
-            todo: [],
-            inprogress: [],
-            done: []
-        }
-    };
+let tasks = {
+    todo: [],
+    inprogress: [],
+    done: []
+};
 
-    let isAdminLoggedIn = false; // Flag para verificar se o admin está logado
+// Carrega as tarefas do localStorage
+function loadTasks() {
+    const savedTasks = localStorage.getItem('tasks');
+    if (savedTasks) {
+        tasks = JSON.parse(savedTasks);
+    }
+}
 
-    // Função para fazer login
-    window.login = function () {
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
+// Salva as tarefas no localStorage
+function saveTasks() {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+}
 
-        // Carrega os dados do arquivo users.json
-        fetch('Data/users.json') // Certifique-se de que este caminho está correto
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Erro ao carregar usuários: ' + response.statusText);
-                }
-                return response.json();
-            })
-            .then(users => {
-                const user = users.find(u => u.username === username && u.password === password);
-                if (user && user.username === 'admin') {
-                    isAdminLoggedIn = true; // O admin está logado
-                    document.getElementById('login-form').style.display = 'none'; // Esconde o formulário
-                    document.getElementById('kanban-board').style.display = 'block'; // Mostra o Kanban
-                    renderTasks(); // Renderiza as tarefas
-                } else {
-                    alert('Usuário ou senha inválidos');
-                }
-            })
-            .catch(err => console.error('Erro ao carregar usuários:', err));
-    };
+// Função para fazer login
+function login() {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
 
-    // Função para adicionar nova tarefa à coluna "A Fazer"
-    window.addTask = function (column) {
-        if (!isAdminLoggedIn) {
-            alert("Somente o administrador pode adicionar tarefas.");
-            return;
-        }
-        const task = prompt("Digite a descrição da tarefa:");
-        if (task) {
-            tasks.admin[column].push(task); // Adiciona a tarefa ao admin
-            renderTasks();
-            renderUserTasks(); // Renderiza as tarefas para o usuário também
-        }
-    };
+    // Verifique se as credenciais do admin estão corretas
+    if (username === 'admin' && password === '123456') {
+        document.getElementById('login-form').style.display = 'none'; // Esconde o formulário
+        document.getElementById('kanban-board').style.display = 'block'; // Mostra o Kanban
+        renderTasks(); // Renderiza as tarefas
+    } else {
+        alert('Usuário ou senha inválidos');
+    }
+}
 
-    // Renderiza as tarefas em suas respectivas colunas
-    function renderTasks() {
-        // Limpa as colunas
-        document.getElementById('todo-items').innerHTML = '';
-        document.getElementById('inprogress-items').innerHTML = '';
-        document.getElementById('done-items').innerHTML = '';
+// Adiciona nova tarefa à coluna "A Fazer"
+function addTask(column) {
+    const task = prompt("Digite a descrição da tarefa:");
+    if (task) {
+        tasks[column].push(task);
+        renderTasks();
+        saveTasks(); // Salva as tarefas após a adição
+    }
+}
 
-        // Renderiza as tarefas do admin
-        const adminTasks = tasks.admin;
-        adminTasks.todo.forEach((task, index) => {
-            const taskDiv = createTaskDiv(task, 'todo', index);
-            document.getElementById('todo-items').appendChild(taskDiv);
-        });
+// Renderiza as tarefas em suas respectivas colunas
+function renderTasks() {
+    // Limpa as colunas
+    document.getElementById('todo-items').innerHTML = '';
+    document.getElementById('inprogress-items').innerHTML = '';
+    document.getElementById('done-items').innerHTML = '';
 
-        adminTasks.inprogress.forEach((task, index) => {
-            const taskDiv = createTaskDiv(task, 'inprogress', index);
-            document.getElementById('inprogress-items').appendChild(taskDiv);
-        });
+    // Renderiza as tarefas em cada coluna
+    tasks.todo.forEach((task, index) => {
+        const taskDiv = createTaskDiv(task, 'todo', index);
+        document.getElementById('todo-items').appendChild(taskDiv);
+    });
 
-        adminTasks.done.forEach((task, index) => {
-            const taskDiv = createTaskDiv(task, 'done', index);
-            document.getElementById('done-items').appendChild(taskDiv);
-        });
+    tasks.inprogress.forEach((task, index) => {
+        const taskDiv = createTaskDiv(task, 'inprogress', index);
+        document.getElementById('inprogress-items').appendChild(taskDiv);
+    });
+
+    tasks.done.forEach((task, index) => {
+        const taskDiv = createTaskDiv(task, 'done', index);
+        document.getElementById('done-items').appendChild(taskDiv);
+    });
+}
+
+// Cria um elemento de tarefa
+function createTaskDiv(task, column, index) {
+    const taskDiv = document.createElement('div');
+    taskDiv.className = 'kanban-item';
+    taskDiv.innerHTML = `${task} <button onclick="moveTask('${column}', ${index})">Mover</button>`;
+    return taskDiv;
+}
+
+// Move tarefa para a próxima coluna
+function moveTask(currentColumn, index) {
+    let nextColumn;
+
+    // Define para qual coluna a tarefa deve ser movida
+    if (currentColumn === 'todo') {
+        nextColumn = 'inprogress';
+    } else if (currentColumn === 'inprogress') {
+        nextColumn = 'done';
+    } else if (currentColumn === 'done') {
+        nextColumn = 'todo';
     }
 
-    // Renderiza as tarefas para o usuário
-    function renderUserTasks() {
-        // Limpa as colunas do usuário
-        document.getElementById('todo-items-user').innerHTML = '';
-        document.getElementById('inprogress-items-user').innerHTML = '';
-        document.getElementById('done-items-user').innerHTML = '';
+    const task = tasks[currentColumn][index];
+    tasks[currentColumn].splice(index, 1); // Remove a tarefa da coluna atual
+    tasks[nextColumn].push(task); // Adiciona a tarefa à próxima coluna
+    renderTasks(); // Atualiza a exibição das tarefas
+    saveTasks(); // Salva as tarefas após a movimentação
+}
 
-        // Renderiza as tarefas do admin no quadro do usuário
-        const adminTasks = tasks.admin;
-        adminTasks.todo.forEach((task) => {
-            const taskDiv = createTaskDiv(task, 'todo-user', -1);
-            document.getElementById('todo-items-user').appendChild(taskDiv);
-        });
-
-        adminTasks.inprogress.forEach((task) => {
-            const taskDiv = createTaskDiv(task, 'inprogress-user', -1);
-            document.getElementById('inprogress-items-user').appendChild(taskDiv);
-        });
-
-        adminTasks.done.forEach((task) => {
-            const taskDiv = createTaskDiv(task, 'done-user', -1);
-            document.getElementById('done-items-user').appendChild(taskDiv);
-        });
-    }
-
-    // Cria um elemento de tarefa
-    function createTaskDiv(task, column, index) {
-        const taskDiv = document.createElement('div');
-        taskDiv.className = 'kanban-item';
-        taskDiv.innerHTML = `${task} <button onclick="moveTask('${column}', ${index})">Mover</button>`;
-        return taskDiv;
-    }
-
-    // Move tarefa para a próxima coluna
-    window.moveTask = function (currentColumn, index) {
-        let nextColumn;
-
-        // Define para qual coluna a tarefa deve ser movida
-        if (currentColumn.includes('todo')) {
-            nextColumn = currentColumn.replace('todo', 'inprogress');
-        } else if (currentColumn.includes('inprogress')) {
-            nextColumn = currentColumn.replace('inprogress', 'done');
-        } else if (currentColumn.includes('done')) {
-            nextColumn = currentColumn.replace('done', 'todo');
-        }
-
-        const currentTasks = tasks.admin[currentColumn.replace('-user', '')];
-        const task = currentTasks[index];
-        currentTasks.splice(index, 1); // Remove a tarefa da coluna atual
-        tasks.admin[nextColumn.replace('-user', '')].push(task); // Adiciona a tarefa à próxima coluna
-        renderTasks(); // Atualiza a exibição das tarefas
-        renderUserTasks(); // Atualiza a exibição das tarefas para o usuário
-    };
-
-    // Inicializa o quadro de Kanban
-    renderTasks();
-    renderUserTasks(); // Renderiza tarefas iniciais para o usuário
-});
+// Inicializa o quadro de Kanban
+loadTasks(); // Carrega tarefas do localStorage
+renderTasks(); // Renderiza as tarefas
