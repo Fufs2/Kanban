@@ -31,18 +31,15 @@
                 <div class="kanban-items" id="done-items"></div>
             </div>
         </div>
-        
+
         <div id="admin-controls" style="display: none;">
-            <h3>Atribuir Tarefa</h3>
-            <input type="text" id="taskDescription" placeholder="Descrição da Tarefa">
-            <select id="assignUser">
-                <option value="user1">user1</option>
-                <!-- Adicione mais usuários conforme necessário -->
-            </select>
+            <h2>Atribuir Tarefa</h2>
+            <input type="text" id="assign-username" placeholder="Usuário">
+            <input type="text" id="assign-task" placeholder="Descrição da Tarefa">
             <button onclick="assignTask()">Atribuir Tarefa</button>
         </div>
     </div>
-    
+
     <script src="app.js"></script>
 </body>
 </html>
