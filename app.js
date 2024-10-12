@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const password = document.getElementById('password').value;
 
         // Carrega os dados do arquivo users.json
-        fetch('users.json')
+        fetch('Data/users.json')
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Erro ao carregar usuários: ' + response.statusText);
