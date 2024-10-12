@@ -108,3 +108,5 @@ function moveTask(currentColumn, index) {
 
 // Inicializa o quadro de Kanban
 renderTasks();
+localStorage.setItem('tasks', JSON.stringify(tasks));
+
