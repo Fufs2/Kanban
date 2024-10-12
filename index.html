@@ -20,14 +20,7 @@
             <div class="kanban-column" id="todo">
                 <h2>A Fazer</h2>
                 <div class="kanban-items" id="todo-items"></div>
-                <div>
-                    <select id="assignee">
-                        <option value="">Selecione o Usuário</option>
-                        <option value="user1">User 1</option>
-                        <option value="admin">Admin</option>
-                    </select>
-                    <button onclick="addTask('todo')">Adicionar Tarefa</button>
-                </div>
+                <button onclick="addTask('todo')">Adicionar Tarefa</button>
             </div>
             <div class="kanban-column" id="in-progress">
                 <h2>Em Progresso</h2>
@@ -37,6 +30,16 @@
                 <h2>Concluído</h2>
                 <div class="kanban-items" id="done-items"></div>
             </div>
+        </div>
+        
+        <div id="admin-controls" style="display: none;">
+            <h3>Atribuir Tarefa</h3>
+            <input type="text" id="taskDescription" placeholder="Descrição da Tarefa">
+            <select id="assignUser">
+                <option value="user1">user1</option>
+                <!-- Adicione mais usuários conforme necessário -->
+            </select>
+            <button onclick="assignTask()">Atribuir Tarefa</button>
         </div>
     </div>
     
